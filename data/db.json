@@ -1,0 +1,22 @@
+{
+  "deposits": [
+    { "date": "2025-06-01", "branch": "Dhaka", "amount": 500000 },
+    { "date": "2025-06-02", "branch": "Chittagong", "amount": 420000 }
+  ],
+  "loans": [
+    { "date": "2025-06-01", "product": "Home", "amount": 800000 },
+    { "date": "2025-06-02", "product": "Auto", "amount": 300000 }
+  ],
+  "atm": [
+    { "date": "2025-06-01", "transactions": 1200 },
+    { "date": "2025-06-02", "transactions": 1350 }
+  ],
+  "cards": [
+    { "date": "2025-06-01", "swipes": 450 },
+    { "date": "2025-06-02", "swipes": 500 }
+  ],
+  "internet_banking": [
+    { "date": "2025-06-01", "logins": 900 },
+    { "date": "2025-06-02", "logins": 950 }
+  ]
+}
