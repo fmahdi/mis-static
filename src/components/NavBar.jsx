@@ -2,7 +2,7 @@
 const NavBar = () => {
   return (
     <nav>
-      <div>MISO</div>
+      <div>MIS Division</div>
     </nav>
   );
 };
