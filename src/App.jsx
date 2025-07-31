@@ -1,51 +1,92 @@
-import './App.css'
-// import NavBar from './Layout/NavBar'
-// import Body from './Layout/Body'
-// import FootBar from './Layout/FootBar'
-
 import React, { useEffect, useState } from 'react';
 import { fetchData } from './services/api';
-import { ChartCard } from './Component/ChartCard';
-import { ExportButtons } from './Component/ExportButtons';
+import { ChartCard } from './components/ChartCard';
+import NavBar from './components/NavBar';
+import './App.css';
 
 function App() {
-  const [deposits, setDeposits] = useState([]);
-  const [loans, setLoans] = useState([]);
-  const [atm, setAtm] = useState([]);
-  const [cards, setCards] = useState([]);
-  const [internetBanking, setInternetBanking] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [chartData, setChartData] = useState({
+    deposits: [],
+    loans: [],
+    atm: [],
+    cards: [],
+    internet_banking: []
+  });
 
   useEffect(() => {
-    fetchData('deposits').then(setDeposits);
-    fetchData('loans').then(setLoans);
-    fetchData('atm').then(setAtm);
-    fetchData('cards').then(setCards);
-    fetchData('internet_banking').then(setInternetBanking);
+    const loadData = async () => {
+      try {
+        const [deposits, loans, atm, cards, internetBanking] = await Promise.all([
+          fetchData('deposits'),
+          fetchData('loans'),
+          fetchData('atm'),
+          fetchData('cards'),
+          fetchData('internet_banking')
+        ]);
+
+        setChartData({
+          deposits,
+          loans,
+          atm,
+          cards,
+          internet_banking: internetBanking
+        });
+      } catch (error) {
+        console.error('Failed to load data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
   }, []);
 
+  if (isLoading) {
+    return <div className="loading-screen">Loading dashboard...</div>;
+  }
+
   return (
-    <div id="dashboard" style={{ padding: 20 }}>
-      <h1>Bank MIS Dashboard</h1>
-      <div className="charts-grid">
-        <ChartCard title="Deposits" data={deposits} dataKey="amount" />
-        <ChartCard title="Loans" data={loans} dataKey="amount" />
-        <ChartCard title="ATM Transactions" data={atm} dataKey="transactions" />
-        <ChartCard title="Card Swipes" data={cards} dataKey="swipes" />
-        <ChartCard title="Internet Banking Logins" data={internetBanking} dataKey="logins" />
+    <div className="app-container">
+      <NavBar />
+      <div className="dashboard">
+        <h1>Bank MIS Dashboard</h1>
+        
+        <div className="charts-grid">
+          <ChartCard 
+            title="Deposits" 
+            data={chartData.deposits} 
+            dataKey="amount" 
+            color="#8884d8"
+          />
+          <ChartCard 
+            title="Loans" 
+            data={chartData.loans} 
+            dataKey="amount" 
+            color="#82ca9d"
+          />
+          <ChartCard 
+            title="ATM Transactions" 
+            data={chartData.atm} 
+            dataKey="transactions" 
+            color="#ffc658"
+          />
+          <ChartCard 
+            title="Card Swipes" 
+            data={chartData.cards} 
+            dataKey="swipes" 
+            color="#ff8042"
+          />
+          <ChartCard 
+            title="Internet Banking" 
+            data={chartData.internet_banking} 
+            dataKey="logins" 
+            color="#0088fe"
+          />
+        </div>
       </div>
-      <ExportButtons
-        data={[
-          ...deposits,
-          ...loans,
-          ...atm,
-          ...cards,
-          ...internetBanking
-        ]}
-        filename="bank_report"
-      />
     </div>
   );
 }
 
 export default App;
-
